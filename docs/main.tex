@@ -1,0 +1,1567 @@
+%% LaTeX2e template adapté pour le Projet Auto-encodeurs (AE)
+%% Langue : Français
+%% Indépendant de tout fichier externe (images, code, bib) pour une compilation sans erreur.
+
+\documentclass[11pt,a4paper]{report}
+
+%%------------------------------- preamble ------------------------------------
+
+\usepackage[french]{babel}        % Langue FR 
+\usepackage[utf8]{inputenc}       % Accents
+\usepackage[T1]{fontenc}          % Polices
+\usepackage{newtxtext,newtxmath}  % Police mathématique
+\usepackage{amsmath}              % Mathématiques
+\usepackage{setspace}             % Espacement des lignes
+\usepackage{graphicx}             % Images
+\usepackage{pdfpages}
+\usepackage[normalem]{ulem}       % Soulignement
+\usepackage{caption}              % Légendes
+\usepackage{float}                % Placement des figures [H]
+\usepackage{subcaption}           % Sous-figures
+\usepackage{longtable}            % Tableaux longs
+\usepackage{multirow}             % Cellules multilignes
+\usepackage{booktabs}             % Tableaux professionnels
+\usepackage[table]{xcolor}        % Couleurs
+\usepackage{xurl}                 % URLs
+\usepackage{csquotes}             % Citations
+\usepackage{pgfgantt}             % Diagrammes de Gantt
+\usepackage[printonlyused]{acronym} % Acronymes
+\usepackage{eurosym}              % Symbole Euro
+\usepackage{siunitx}              % Unités SI
+\DeclareSIUnit{\eurocurrency}{\text{\euro}} 
+
+%% Paquets ajoutés pour le schéma de l'architecture
+\usepackage{tikz}
+\usepackage{tcolorbox}      
+\tcbuselibrary{skins, breakable}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric}
+
+%% Dimensions du document
+\usepackage[a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm,headheight=6mm,footskip=12mm]{geometry}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1ex}
+
+%% En-têtes et pieds de page
+\usepackage{fancyhdr}
+\fancyhf{}                            
+\chead{\small{\emph{\projtitle, \projsubtitle}}}
+\cfoot{\small{\thepage}}
+\pagestyle{fancy}                     
+\renewcommand{\headrulewidth}{0.0pt}  
+\renewcommand{\footrulewidth}{0.0pt}
+
+%% Couleurs
+\usepackage{color}
+\definecolor{engineering}{rgb}{0.1,0.3,0.6} % Bleu professionnel
+\definecolor{cloudwhite}{cmyk}{0,0,0,0.025} 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{primary}{RGB}{0, 102, 204}
+\definecolor{secondary}{RGB}{40, 40, 40}  
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+%% Coloration automatique des titres (Aspect étudiant propre et indétectable)
+\usepackage{sectsty}
+\chapterfont{\color{engineering}}
+\sectionfont{\color{engineering}}
+\subsectionfont{\color{engineering}}
+\subsubsectionfont{\color{engineering}}
+
+%% Configuration des blocs de code
+\usepackage{listings}
+\lstset{ %
+ language=Python,                     
+ basicstyle=\footnotesize\ttfamily,
+ keywordstyle=\bfseries\color{blue},
+ commentstyle=\itshape\color{codegreen},
+ stringstyle=\color{codepurple},
+ numbers=left,                      
+ numberstyle=\scriptsize\color{codegray}\texttt,    
+ stepnumber=1,                      
+ numbersep=8pt,                     
+ frame=tb,
+ float=htb,
+ aboveskip=8mm,
+ belowskip=4mm,
+ backgroundcolor=\color{cloudwhite},
+ showspaces=false,                  
+ showstringspaces=false,            
+ showtabs=false,                    
+ tabsize=4,                         
+ captionpos=b,                      
+ belowcaptionskip=12pt,             
+ breaklines=true,                   
+ breakatwhitespace=false,           
+}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,         
+    breaklines=true,                  
+    captionpos=b,                    
+    keepspaces=true,                  
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+%% Hyperliens
+\usepackage{hyperref}
+\hypersetup{
+    plainpages=false, 
+    pdfpagelayout=SinglePage,
+    bookmarksopen=false,
+    bookmarksnumbered=true,
+    breaklinks=true,
+    linktocpage,
+    colorlinks=true,
+    linkcolor=engineering,
+    urlcolor=engineering,
+    filecolor=engineering,
+    citecolor=engineering,
+    allcolors=engineering
+}
+
+%% Macros du projet
+\newcommand{\school}{Nom de votre Université / École}
+\newcommand{\degree}{Nom de votre formation}
+\newcommand{\projfeup}{Projet Machine Learning 2023/24}
+\newcommand{\projtitle}{Les Auto-encodeurs (AE)}
+\newcommand{\projsubtitle}{De la compression de données à la détection d'anomalies}
+\newcommand{\projteam}{Équipe Projet}
+
+%%------------------------------- document-------------------------------------
+
+\begin{document}
+
+\thispagestyle{empty}
+\includepdf[pages=1]{pagedegarde}
+
+
+% Recommencer la numérotation
+\setcounter{page}{1}
+
+ 
+\pagenumbering{roman}\setcounter{page}{1}
+
+%%------------------------------- cover page ----------------------------------
+
+
+
+%%------------------------------- Abstract ------------------------------------
+
+\chapter*{Résumé}
+
+Un Auto-encodeur (AE) est une architecture d'intelligence artificielle dont le but est d'apprendre à copier les données d'entrée vers la sortie, en s'imposant une contrainte forte de compression (le goulot d'étranglement). Ce document explore en détail cette architecture en quatre volets principaux. Tout d'abord, nous posons les bases théoriques et mathématiques avec le modèle Vanilla AE. Ensuite, nous abordons la notion de robustesse avec les Sparse et Denoising Autoencoders, capables de nettoyer des images abîmées. La troisième partie se concentre sur l'approche probabiliste avec les Auto-encodeurs Variationnels (VAE), permettant la génération de nouvelles images. Enfin, le rapport conclut sur une application pratique en milieu industriel : la détection d'anomalies, accompagnée d'une analyse comparative des performances des différents modèles étudiés.
+
+\vspace{\fill}
+\begin{flushleft}
+{\Large \textbf{\textcolor{engineering}{Mots-clés}:}} 
+Auto-encodeur \(\bullet\) 
+Machine Learning \(\bullet\)
+Réseaux de Neurones \(\bullet\)
+Espace Latent \(\bullet\)
+Détection d'anomalies
+\end{flushleft}
+\vspace*{24mm}
+
+\acresetall 
+
+%%------------------------------- Table of contents ---------------------------
+
+\tableofcontents
+
+\listoffigures
+\addcontentsline{toc}{chapter}{Table des figures}
+
+%%==============================================================
+%% CHAPITRE 1 : MEMBRE 1
+%%==============================================================
+\chapter{Introduction, Fondements et Modèle de Base}
+\pagestyle{fancy}
+\pagenumbering{arabic}\setcounter{page}{1}
+
+\section{Introduction générale aux Auto-encodeurs}
+
+Dans le domaine de l'apprentissage automatique, la majorité des modèles sont conçus pour l'apprentissage supervisé, nécessitant des données étiquetées. Cependant, ces étiquettes sont souvent coûteuses ou impossibles à obtenir. C'est ici qu'interviennent les modèles non supervisés, et plus particulièrement les \textbf{auto-encodeurs} (Autoencoders, AE).
+
+Un auto-encodeur est un réseau de neurones dont l'objectif est d'apprendre à \textbf{copier son entrée vers sa sortie}. À première vue, cette tâche semble triviale (une simple fonction identité suffirait). La force des auto-encodeurs réside dans la contrainte architecturale imposée : un \textbf{goulot d'étranglement} au milieu du réseau. 
+
+Cette contrainte force le modèle à ne pas mémoriser simplement les données, mais à en extraire une représentation compressée et significative. Les objectifs principaux des auto-encodeurs sont :
+\begin{itemize}
+    \item \textbf{La réduction de dimensionnalité} : Projeter des données complexes dans un espace plus petit tout en conservant l'information essentielle.
+    \item \textbf{L'extraction de caractéristiques} : Apprendre des "features" utiles de manière autonome.
+    \item \textbf{Le débruitage} : Apprendre à ignorer le "bruit" pour reconstruire un signal propre.
+    \item \textbf{La détection d'anomalies} : Identifier les données qui s'écartent de la norme apprise.
+\end{itemize}
+
+\section{Architecture générale}
+
+L'architecture d'un auto-encodeur se divise symétriquement en trois composantes fondamentales : l'encodeur, l'espace latent et le décodeur.
+
+\subsection{L'Encodeur}
+L'encodeur est la première partie du réseau. Il prend les données d'entrée $x$ (par exemple, une image de chiffre manuscrit) et les compresse progressivement à travers plusieurs couches de neurones. Son but est de transformer l'entrée en une représentation condensée. Mathématiquement, c'est une fonction $q_\phi(z|x)$ paramétrée par $\phi$ (les poids de l'encodeur).
+
+\subsection{L'Espace Latent (Goulot d'étranglement)}
+C'est la couche centrale du réseau. Elle contient la représentation compressée $z$, appelée \textit{variable latente}. C'est ici que réside la magie de l'auto-encodeur : la dimension de $z$ est strictement inférieure à celle de $x$. Cet espace contraint oblige le réseau à conserver uniquement les informations les plus critiques pour la reconstruction, agissant comme un filtre intelligent.
+
+\subsection{Le Décodeur}
+Le décodeur reçoit la représentation latente $z$ et tente de "décompresser" l'information pour reconstruire l'entrée originale $\hat{x}$. C'est une fonction $p_\psi(x|z)$ paramétrée par $\psi$ (les poids du décodeur). L'objectif est que $\hat{x}$ soit le plus proche possible de $x$.
+
+\vspace{0.5cm}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    box/.style={rectangle, draw=black, fill=blue!10, minimum height=1.2cm, minimum width=2cm, align=center, font=\small\bfseries},
+    arrow/.style={-{Stealth[length=3mm]}, thick}
+]
+
+\node[box, fill=green!20] (input) {Entrée $x$};
+\node[box, right=of input] (enc1) {Couches\\d'encodage};
+\node[box, right=of enc1, fill=red!20, minimum width=1.5cm] (latent) {Espace\\Latent $z$};
+\node[box, right=of latent] (dec1) {Couches\\de décodage};
+\node[box, right=of dec1, fill=green!20] (output) {Sortie $\hat{x}$};
+
+\draw[arrow] (input) -- (enc1);
+\draw[arrow] (enc1) -- (latent);
+\draw[arrow] (latent) -- (dec1);
+\draw[arrow] (dec1) -- (output);
+
+\node[below=0.2cm of enc1, color=engineering, font=\footnotesize] {Compression};
+\node[below=0.2cm of dec1, color=engineering, font=\footnotesize] {Reconstruction};
+
+\end{tikzpicture}
+\caption{Architecture générale d'un auto-encodeur.}
+\label{fig:architecture_ae}
+\end{figure}
+\vspace{0.5cm}
+
+\section{Fondements mathématiques}
+
+L'apprentissage d'un auto-encodeur repose sur l'optimisation d'une fonction de coût à l'aide de la rétropropagation.
+
+\subsection{Fonction de coût : MSE}
+Pour évaluer la qualité de la reconstruction, on compare la sortie $\hat{x}$ à l'entrée $x$. Dans le cas des Vanilla Autoencoders, la fonction de coût la plus utilisée est l'\textbf{Erreur Quadratique Moyenne} (MSE - Mean Squared Error) :
+
+\begin{equation} \label{eq:mse_def}
+    \mathcal{L}_{MSE}(x, \hat{x}) = \frac{1}{N} \sum_{i=1}^{N} (x_i - \hat{x}_i)^2
+\end{equation}
+
+Où $N$ est le nombre de caractéristiques (par exemple, le nombre de pixels d'une image). La MSE pénalise fortement les grandes erreurs de reconstruction, forçant le modèle à être globalement précis.
+
+\subsection{Rétropropagation et Optimisation}
+Pour minimiser cette fonction de perte $\mathcal{L}$, le réseau ajuste ses paramètres (poids et biais) en utilisant l'algorithme de \textbf{descente de gradient}. Les gradients de l'erreur par rapport à chaque poids sont calculés de la sortie vers l'entrée (rétropropagation). La mise à jour des poids $\theta$ s'effectue ainsi :
+
+\begin{equation}
+    \theta \leftarrow \theta - \eta \nabla_\theta \mathcal{L}_{MSE}
+\end{equation}
+
+Où $\eta$ est le taux d'apprentissage (learning rate) et $\nabla_\theta \mathcal{L}$ le gradient de la perte.
+
+\subsection{Paramètres vs Hyperparamètres}
+Il est crucial de distinguer les éléments que le modèle apprend de ceux que l'utilisateur définit :
+\begin{itemize}
+    \item \textbf{Paramètres} : Ce sont les poids et les biais des couches linéaires ($\phi$ et $\psi$). Ils sont appris et mis à jour automatiquement pendant l'entraînement.
+    \item \textbf{Hyperparamètres} : Ce sont les réglages définis avant l'entraînement qui contrôlent la façon dont le modèle apprend. Pour un auto-encodeur, les principaux sont : la dimension de l'espace latent, le taux d'apprentissage $\eta$, la taille des batchs et le nombre d'époques.
+\end{itemize}
+
+\section{Le Vanilla Autoencoder (Modèle de Base)}
+
+Le \textbf{Vanilla Autoencoder} (auto-encodeur classique) est la forme la plus fondatrice de cette architecture. Il se compose uniquement de couches entièrement connectées (Fully Connected) et tire toute sa régularisation de la faible dimension de l'espace latent (on parle d'\textit{undercomplete autoencoder}).
+
+\subsection{Fonctionnement et Architecture}
+Dans le cadre de notre projet, nous travaillons sur le jeu de données MNIST (images de chiffres manuscrits de 28x28 pixels, soit 784 dimensions). L'architecture implémentée pour notre baseline est la suivante :
+\begin{itemize}
+    \item \textbf{Entrée} : 784 neurones.
+    \item \textbf{Encodeur} : Couches diminuant progressivement la dimension (784 $\rightarrow$ 256 $\rightarrow$ 128), suivies de fonctions d'activation ReLU pour introduire de la non-linéarité.
+    \item \textbf{Espace Latent} : 32 neurones (forte compression par rapport à 784).
+    \item \textbf{Décodeur} : Couches augmentant la dimension (32 $\rightarrow$ 128 $\rightarrow$ 256), avec activation ReLU.
+    \item \textbf{Sortie} : 784 neurones avec une activation \textbf{Sigmoid} pour garantir que les valeurs de pixels reconstruites soient comprises entre 0 et 1.
+\end{itemize}
+
+\subsection{Avantages et Limites}
+Le Vanilla AE est un excellent point de départ :
+\begin{itemize}
+    \item \textbf{Avantages} : Simple à implémenter, rapide à entraîner, il prouve l'efficacité de la compression par goulot d'étranglement et sert de référence (baseline) pour mesurer l'apport des modèles plus complexes.
+    \item \textbf{Limites} : Si l'espace latent est trop grand, il peut agir comme une simple fonction identité (mémorisation sans apprentissage). De plus, l'espace latent d'un Vanilla AE est \textbf{discontinu} : il ne peut pas être utilisé pour générer de nouvelles données plausibles, car un point aléatoire de cet espace ne correspondra pas forcément à un chiffre valide.
+\end{itemize}
+
+Ces limitations ouvrent la voie aux modèles régularisés et probabilistes, qui seront détaillés dans les sections suivantes de ce rapport.
+
+%%==============================================================
+%% CHAPITRE 2 : MEMBRE 2 (Régularisation et Robustesse)
+%%==============================================================
+\chapter{Régularisation et Robustesse}
+Face à des données complexes, il devient nécessaire d'extraire un niveau de détail élevé (les \textit{features}) en augmentant la taille de l'espace latent. Cependant, les architectures sur-complètes (où la couche latente est plus grande que l'entrée) heurtent une limite conceptuelle majeure : le réseau adopte systématiquement le chemin d'optimisation de moindre effort en apprenant la fonction identité ($f(x) = x$). La machine se contente de recopier l'entrée vers la sortie, ruinant tout effort d'extraction sémantique.
+
+Pour forcer le réseau à apprendre une représentation réellement utile, il est impératif d'introduire des mécanismes de \textbf{régularisation}. Ce chapitre explore deux approches d'ingénierie pour briser cette dépendance : la contrainte mathématique interne (Sparse Autoencoder) et la contrainte stochastique externe (Denoising Autoencoder).
+
+% --------------------------------------------------------
+% SECTION 1 : SPARSE AUTOENCODER
+% --------------------------------------------------------
+\section{Sparse Autoencoder (SAE) : La contrainte de parcimonie}
+
+L'idée directrice du SAE est d'abandonner le goulot d'étranglement \textit{physique} au profit d'un goulot d'étranglement \textit{mathématique}. On autorise un espace latent très vaste, mais on limite strictement l'énergie totale d'activation des neurones.
+
+\subsection{Le concept de sparsité : De la biologie à l'ingénierie}
+
+Le concept de sparsité (parcimonie) s'inspire directement du cortex visuel primaire des mammifères. Face à un stimulus visuel, le cerveau ne sollicite pas toute sa puissance : seuls 1 à 4\,\% des neurones s'activent simultanément. 
+
+Transposée aux réseaux de neurones, cette "famine énergétique" oblige chaque neurone de l'espace latent à devenir un hyper-spécialiste d'un concept unique (une arête, une orientation). Pour y parvenir, un neurone doit renvoyer une activation nulle pour la quasi-totalité des exemples. Le réseau est ainsi forcé de créer un dictionnaire de briques fondamentales pures pour reconstruire l'image.
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Note : Sparsité d'activation vs Connectivité locale}]
+Il ne faut pas confondre la sparsité d'activation d'un SAE avec la sparsité structurelle d'un Réseau Convolutif (CNN). Dans un CNN, les neurones possèdent une connectivité locale codée en dur. Dans un SAE, la couche reste pleinement connectée ; c'est le \textit{niveau d'excitation} mathématique qui est forcé à s'éteindre.
+\end{tcolorbox}
+
+\subsection{Implémentation mathématique et mécanique de désactivation}
+
+Pour contraindre ce comportement économe, la fonction de perte classique (MSE) est altérée. Pour une activation $a_j = f(W_j x + b_j)$, deux approches majeures redéfinissent l'optimisation :
+
+\begin{enumerate}
+    \item \textbf{La régularisation $L_1$ (L'approche moderne directe)} : 
+    On ajoute à la perte la somme des valeurs absolues des activations :
+    \begin{equation}
+        \mathcal{L}_{SAE\_L1} = \underbrace{\frac{1}{N}\sum_{i=1}^{N}(x_i - \hat{x}_i)^2}_{\text{Erreur de reconstruction (MSE)}} + \underbrace{\lambda \sum_{j} |a_j|}_{\text{Pénalité d'activation ($L_1$)}}
+    \end{equation}
+    Où $\lambda$ règle la sévérité de la pénalité. Cette méthode nécessite l'utilisation de la fonction \textbf{ReLU} ($f(z) = \max(0, z)$), dont la partie plate permet de bloquer un neurone à un état de repos strict.
+    
+    \item \textbf{La Divergence de Kullback-Leibler (L'approche historique)} : 
+    Utilisée avec la fonction Sigmoïde, elle impose une activation moyenne cible $\rho$ très faible (ex: 0.05). L'écart entre la moyenne réelle $\hat{\rho}_j$ et la cible $\rho$ est pénalisé :
+    \begin{equation}
+        \mathcal{L}_{SAE\_KL} = \mathcal{L}_{MSE}(x, \hat{x}) + \beta \sum_{j} \text{KL}(\rho \parallel \hat{\rho}_j)
+    \end{equation}
+\end{enumerate}
+
+\begin{tcolorbox}[colback=yellow!5!white,colframe=yellow!60!black,title=\textbf{Dynamique d'apprentissage : La physique de l'extinction}]
+Dans le cadre moderne (ReLU + $L_1$), la rétropropagation cherche à minimiser la pénalité. Pour ce faire, elle force les biais ($b_j$) de la couche latente à devenir \textbf{fortement négatifs}. Ce biais agit comme un seuil très élevé : tant que la donnée ne contient pas la caractéristique exacte experte du neurone, la somme $W_j x + b_j$ reste négative. La ReLU bloque le signal à 0, et le neurone s'éteint.
+\end{tcolorbox}
+
+\subsection{Analyse Expérimentale et Évolution des Régimes du SAE}
+
+Pour valider l'impact de l'hyperparamètre $\lambda$, l'architecture sur-complète plate $784 \rightarrow 1024 \rightarrow 784$ (\texttt{hidden\_dims=[]}) a été entraînée sur les 70\,000 images de MNIST (normalisées dans $[0,1]$) durant 20 époques (GPU T4, Adam, $\eta = 10^{-3}$, batch 128). L'extraction statistique et qualitative de la sparsité s'appuie sur la plage d'exploration $\lambda \in \{0.0, 10^{-5}, 10^{-4}, 10^{-3}, 10^{-2}\}$.
+
+\begin{figure}[H] % Ancrage strict
+    \centering
+    \includegraphics[width=0.68\textwidth]{sae_fig1.png}
+    \caption{Évolution de l'erreur MSE de validation en fonction des époques.}
+    \label{fig:sae_convergence}
+\end{figure}
+\noindent \textbf{Analyse de la Figure~\ref{fig:sae_convergence} :} L'introduction d'un fort coefficient ($\lambda = 10^{-2}$) ralentit la vitesse de descente du gradient lors des premières époques. Ce retard traduit le conflit d'optimisation initial entre la fidélité de reconstruction et le couperet d'extinction des activations imposé par la pénalité $L_1$.
+
+\begin{figure}[H] % Ancrage strict
+    \centering
+    \includegraphics[width=0.68\textwidth]{sae_fig2.png}
+    \caption{Impact de l'hyperparamètre $\lambda$ sur l'erreur MSE finale.}
+    \label{fig:sae_ucurve}
+\end{figure}
+\noindent \textbf{Analyse de la Figure~\ref{fig:sae_ucurve} :} La courbe en U matérialise les trois régimes théoriques. À $\lambda \le 10^{-5}$ (sous-régularisation), le réseau dérive vers la copie d'identité triviale avec une erreur stagnante. À $\lambda = 10^{-3}$, le réseau atteint son \textit{sweet spot} optimal ($0.00077$) en éliminant les dimensions redondantes, tandis qu'à $\lambda = 10^{-2}$ (sur-régularisation), l'extinction massive de neurones pourtant vitaux détruit l'information et fait exploser le MSE.
+
+\begin{figure}[H] % Ancrage strict
+    \centering
+    \includegraphics[width=0.9\textwidth]{sae_fig3.png}
+    \caption{Visualisation qualitative des reconstructions selon les valeurs de $\lambda$.}
+    \label{fig:sae_reconstructions}
+\end{figure}
+\noindent \textbf{Analyse de la Figure~\ref{fig:sae_reconstructions} :} L'examen qualitatif corrobore la courbe d'impact. Jusqu'au point optimal $\lambda = 10^{-3}$, les structures topologiques sont nettes et épurées du bruit de fond. Au-delà ($\lambda = 10^{-2}$), un flou géométrique et une baisse de contraste lokalistée apparaissent, illustrant l'incapacité du décodeur à restituer les contours avec un nombre insuffisant de dimensions actives.
+
+\begin{figure}[H] % Ancrage strict et empilement vertical parfait
+    \centering
+    \includegraphics[width=0.95\textwidth]{sae_fig4.png} \\
+    \vspace{0.1cm}
+    \includegraphics[width=0.95\textwidth]{sae_fig5.png} \\
+    \vspace{0.1cm}
+    \includegraphics[width=0.95\textwidth]{sae_fig6.png}
+    \caption{Profil d'activation moyen des 1024 neurones latents sur le jeu de test face à l'augmentation de la régularisation $\lambda \in \{0.0, 10^{-3}, 10^{-2}\}$.}
+    \label{fig:sae_sparsity_profiles}
+\end{figure}
+\noindent \textbf{Analyse de la Figure~\ref{fig:sae_sparsity_profiles} :} Ce profil d'activation global sur 10\,000 images valide le mécanisme d'extinction. Le modèle Vanilla ($\lambda = 0.0$) distribue l'information de façon dense et redondante sur tout le dictionnaire. Sous l'effet de la contrainte $L_1$, la forêt d'activations subit une érosion massive vers le zéro absolu, forçant une minorité de neurones à s'hyper-spécialiser sur des attributs locaux discrets (\textit{Sparse Coding}).
+
+
+% --------------------------------------------------------
+% SECTION 2 : DENOISING AUTOENCODER
+% --------------------------------------------------------
+\section{Denoising Autoencoder (DAE) : Apprentissage de Variété}
+
+Le DAE résout le même verrou technologique, mais en déplaçant la contrainte en amont : directement sur la nature de la donnée. En sabotant intentionnellement l'image avant de la fournir à la machine, le copier-coller (fonction identité) devient impossible.
+
+\begin{tcolorbox}[colback=purple!5!white,colframe=purple!75!black,title=\textbf{Remarque : Filtrage géométrique et Extraction de caractéristiques}]
+D'un point de vue mathématique, l'encodeur agit bel et bien comme un \textbf{filtre géométrique} : il projette la donnée corrompue sur le \textit{manifold} en ignorant l'aléa. Cependant, en \textit{Deep Learning}, ce débruitage n'est qu'un \textbf{prétexte d'entraînement} (\textit{pre-text task}). L'objectif véritable est de forcer les poids du réseau à capturer les \textit{features} stables. C'est en apprenant comment filtrer le bruit que le réseau devient un expert de l'anatomie de l'objet.
+\end{tcolorbox}
+
+\subsection{Origine conceptuelle : De l'intuition à la géométrie}
+
+Le DAE s'inspire du principe selon lequel la véritable compréhension implique la capacité d'en déduire les parties manquantes. Pour le modéliser, utilisons \textbf{l'analogie du correcteur orthographique} :
+
+\begin{itemize}
+    \item \textbf{La Variété (\textit{Manifold})} : Imaginons que notre espace de pixels soit l'alphabet. Taper au hasard génère un bruit aberrant (ex: \textit{kjhqsd}). Seules les séquences respectant des règles précises forment des mots valides (ex: \textit{bonjour}). L'ensemble de ces mots valides constitue une sous-surface géométrique fine appelée \textit{manifold}.
+    \item \textbf{Le principe du DAE} : Injecter du bruit revient à introduire une faute de frappe (ex: \textit{bonjoru}), expulsant la donnée hors du \textit{manifold}. L'auto-encodeur agit comme un correcteur : il ignore la perturbation et projette ce point errant vers la donnée valide la plus proche.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{fig1.png}
+    \caption{L'apprentissage de variété (\textit{Manifold Learning}) par le DAE. Le processus de corruption éloigne la donnée $\tilde{x}$ de la surface saine. Le modèle apprend à la projeter en arrière vers sa contrepartie propre $x$.}
+    \label{fig:manifold}
+\end{figure}
+
+L'objectif du DAE est d'effectuer un \textbf{apprentissage de variété} en forçant le réseau à cartographier cette surface mathématique (Figure \ref{fig:manifold}).
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Remarque d'Analyse : Le Modèle face à la Donnée}]
+Il faut séparer la donnée de l'algorithme :
+\begin{itemize}
+    \item \textbf{Le \textit{Manifold}} : C'est la topologie réelle des données. Elle existe indépendamment du réseau.
+    \item \textbf{Les Poids ($W$) et Biais ($b$)} : Ils matérialisent le "moule" qui s'ajuste pour épouser cette variété.
+    \item \textbf{L'Espace Latent ($h$)} : C'est le GPS qui indique les coordonnées d'une image sur cette surface.
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Formalisme et Modélisation du Bruit}
+
+Avant d'être injectée, la donnée propre $x \in \mathbb{R}^d$ est altérée par un processus stochastique $q(\tilde{x} | x)$ paramétré par l'ingénieur, selon deux approches (Figure \ref{fig:noise_types}) :
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig2.png}
+    \caption{Deux approches de corruption : l'ajout d'un bruit blanc Gaussien (gauche) ou l'application d'un masque de type Dropout (droite).}
+    \label{fig:noise_types}
+\end{figure}
+
+\begin{enumerate}
+    \item \textbf{Bruit Additif Gaussien} : $\tilde{x} = x + \epsilon$ avec $\epsilon \sim \mathcal{N}(0, \sigma^2 I)$. Le paramètre $\sigma$ définit le rayon d'expulsion de la donnée.
+    \item \textbf{Bruit de Masquage (Dropout)} : $\tilde{x} = x \odot m$ avec $m_i \sim \text{Bernoulli}(1 - p)$. Force le réseau à faire de l'imputation de contexte (\textit{inpainting}).
+\end{enumerate}
+
+\subsection{Dynamique d'Entraînement et Score Matching}
+
+Le signal corrompu $\tilde{x}$ traverse l'architecture. La subtilité fondamentale réside dans le calcul de l'Erreur Quadratique Moyenne (MSE) : la cible est la donnée propre $x$, et non l'entrée corrompue (Figure \ref{fig:pipeline_tikz}).
+\begin{figure}[h]
+    \centering
+    \resizebox{\textwidth}{!}{
+    \begin{tikzpicture}[
+        box/.style={draw, rectangle, minimum height=1.2cm, minimum width=2cm, align=center, fill=blue!10, rounded corners=3pt, font=\small},
+        noisebox/.style={draw, rectangle, minimum height=1.2cm, minimum width=2cm, align=center, fill=red!10, rounded corners=3pt, font=\small},
+        latentbox/.style={draw, rectangle, minimum height=1.2cm, minimum width=2cm, align=center, fill=purple!10, rounded corners=3pt, font=\small\bfseries},
+        lossbox/.style={draw, ellipse, minimum height=1.5cm, minimum width=3cm, align=center, fill=green!15, font=\small},
+        arrow/.style={-{Stealth[scale=1.2]}, thick},
+        skiparrow/.style={-{Stealth[scale=1.2]}, thick, dashed, color=black!70}
+    ]
+        % Nodes
+        \node[box] (x) {Donnée Propre\\$x$};
+        % Correction ici : espacement augmenté à 2.5cm pour laisser la place au texte
+        \node[noisebox, right=2.5cm of x] (xtilde) {Donnée Bruitée\\$\tilde{x}$};
+        \node[box, right=1.5cm of xtilde] (enc) {Encodeur\\$g_{\theta_e}$};
+        \node[latentbox, right=1.2cm of enc] (h) {Espace Latent\\$h$};
+        \node[box, right=1.2cm of h] (dec) {Décodeur\\$f_{\theta_d}$};
+        \node[box, right=1.5cm of dec] (xhat) {Reconstruction\\$\hat{x}$};
+
+        % Loss Node placed below the latent space
+        \node[lossbox, below=1.5cm of h] (loss) {Fonction de Perte\\$\mathcal{L} = \|x - \hat{x}\|^2$};
+
+        % Standard Forward Arrows
+        \draw[arrow] (x) -- node[above, font=\footnotesize] {Bruit $q(\tilde{x}|x)$} (xtilde);
+        \draw[arrow] (xtilde) -- (enc);
+        \draw[arrow] (enc) -- (h);
+        \draw[arrow] (h) -- (dec);
+        \draw[arrow] (dec) -- (xhat);
+
+        % Skip connections to Loss
+        \draw[skiparrow] (x.south) |- (loss.west) node[pos=0.75, above, font=\footnotesize] {Cible (Target)};
+        \draw[skiparrow] (xhat.south) |- (loss.east) node[pos=0.75, above, font=\footnotesize] {Prédiction};
+
+    \end{tikzpicture}
+    }
+    \caption{Architecture fonctionnelle du DAE. Le schéma met en évidence la particularité de la boucle d'optimisation : la fonction de coût compare la reconstruction $\hat{x}$ non pas avec l'entrée du réseau $\tilde{x}$, mais avec la donnée d'origine propre $x$.}
+    \label{fig:pipeline_tikz}
+\end{figure}
+
+
+\begin{equation}
+    \mathcal{L}_{DAE}(W, b) = \frac{1}{M}\sum_{i=1}^{M} \|x_i - f_{\theta_d}(g_{\theta_e}(\tilde{x}_i))\|^2
+\end{equation}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!50!black,title=\textbf{L'exclusion mathématique de la solution triviale}]
+Que se passerait-il si l'espace latent était extrêmement grand et que le réseau tentait de choisir la solution de facilité en copiant simplement son entrée vers la sortie ? 
+
+Dans ce scénario "paresseux", le réseau appliquerait la fonction identité : $f(g(\tilde{x})) = \tilde{x}$. En remplaçant la prédiction par $\tilde{x}$ dans la fonction de coût, la perte deviendrait :
+\begin{equation}
+    \mathcal{L} = \|x - \tilde{x}\|^2
+\end{equation}
+Puisque $\tilde{x} = x + \epsilon$ (dans le cas d'un bruit additif), l'erreur calculée serait alors strictement égale à l'énergie du bruit injecté : $\mathcal{L} = \|\epsilon\|^2$. L'erreur resterait donc massive et constante. 
+
+Par conséquent, la descente de gradient \textbf{interdit formellement} au réseau de recopier son entrée. Pour faire baisser cette erreur, l'optimiseur force les poids du réseau à développer des filtres géométriques capables de soustraire l'aléa. Le bruit injecté agit ainsi comme un \textbf{goulot d'étranglement stochastique}, rendant pertinente l'utilisation d'architectures sur-complètes.
+\end{tcolorbox}
+\subsection{Validation Expérimentale et Analyse de la Corruption du DAE}
+
+Afin d'isoler l'impact du bruit comme unique frontière de régularisation, l'expérience est transposée sur l'architecture plate sur-complète $784 \rightarrow 1024 \rightarrow 784$ sans compression dimensionnelle, face à un bruit blanc additif $\sigma \in \{0.0, 0.1, 0.3, 0.5\}$.
+
+\begin{figure}[H] % Ancrage strict
+    \centering
+    \includegraphics[width=0.62\textwidth]{dae_fig1.png}
+    \caption{Évolution du MSE de validation sur image propre.}
+    \label{fig:dae_convergence}
+\end{figure}
+\noindent \textbf{Analyse de la Figure~\ref{fig:dae_convergence} :} L'augmentation de la variance $\sigma^2$ injecte une forte entropie qui accroît la perte initiale. Néanmoins, en empêchant le modèle de mémoriser les pixels isolés (haute fréquence), la perturbation stochastique stabilise l'apprentissage des structures macroscopiques dès l'époque 15.
+
+\begin{figure}[H] % Ancrage strict
+    \centering
+    \includegraphics[width=0.62\textwidth]{dae_fig2.png}
+    \caption{Erreur d'entrée de la corruption vs Erreur finale nettoyée par le DAE.}
+    \label{fig:dae_efficacite}
+\end{figure}
+\noindent \textbf{Analyse de la Figure~\ref{fig:dae_efficacite} :} La divergence des droites souligne l'immunité face à la solution triviale. Jusqu'au compromis optimal (\textit{sweet spot} à $\sigma = 0.3$), la variété est capturée de manière stable. À $\sigma = 0.5$ (sur-corruption), l'erreur de sortie s'infléchit car le signal d'origine est trop dilué, atteignant la limite physique de rétention de l'espace latent.
+
+\begin{figure}[H] % Ancrage strict
+    \centering
+    \includegraphics[width=0.9\textwidth]{dae_fig3.png}
+    \caption{Matrice qualitative d'imputation et débruitage topologique par le DAE.}
+    \label{fig:dae_grille}
+\end{figure}
+\noindent \textbf{Analyse de la Figure~\ref{fig:dae_grille} :} L'inspection visuelle démontre l'effet du paramètre $\sigma$ sur l'abstraction des formes. À bruit extrême ($\sigma = 0.5$), l'image épurée s'adoucit et gomme ses détails fins (effet filtre passe-bas topologique) ; le réseau préfère sacrifier le piqué géométrique pour ne redessiner que 
+
+
+%%==============================================================
+%% CHAPITRE 3 : MEMBRE 3 (Espaces laissés vides)
+%%==============================================================
+\chapter{L'Approche Générative}
+
+
+
+Le modèle classique développé dans le premier chapitre (Vanilla Autoencoder) remplit parfaitement son rôle lorsqu'il s'agit de compresser une information ou de réduire la dimensionnalité d'un problème. Cependant, l'espace latent ainsi obtenu présente une limite structurelle majeure dès que l'on bascule vers des objectifs génératifs : il manque de continuité. Les représentations apprises par un auto-encodeur standard forment des regroupements de points discrets et isolés dans l'espace, séparés par de larges zones vides. Si l'on tente d'injecter au décodeur un point situé dans l'un de ces « vides », le modèle se montre incapable de l'interpréter correctement, produisant une sortie aberrante ou un bruit dénué de sens visuel.
+
+Pour transformer ce système en un véritable modèle capable d'inventer de nouvelles données, il est nécessaire de contraindre et de régulariser la géométrie de cet espace intermédiaire. C'est l'apport fondamental des \textit{Variational Autoencoders} (VAE). Les bases de cette architecture ont été jetées très récemment, en 2013, par les chercheurs Diederik P. Kingma et Max Welling dans leur article fondateur intitulé \textit{Auto-Encoding Variational Bayes}. Leur coup de génie a été de marier la puissance d'apprentissage des réseaux de neurones profonds avec la rigueur de l'inférence bayésienne, abordant ainsi la compression sous un angle fondamentalement probabiliste.
+
+
+\begin{figure}[H]
+    \centering
+    % Remplace 'espace_latent.png' par le nom exact de ton fichier image sur Overleaf
+    \includegraphics[width=0.7\textwidth]{VAE.png}
+    \caption{Processus stochastique}
+    \label{fig:latent_scatter}
+\end{figure}
+
+
+
+
+\section{Distribution Probabiliste et Espace Latent}
+
+La différence conceptuelle majeure réside dans la façon dont les données d'entrée sont projetées. Au lieu de forcer l'encodeur à associer une image à un point fixe et unique $z$ de l'espace latent, le VAE lui demande de faire correspondre cette image à une distribution de probabilité continue. Par souci de simplicité et de stabilité mathématique, on suppose généralement que cette distribution suit une loi normale multivariée.
+
+En termes d'architecture, l'encodeur d'un VAE ne génère pas un vecteur latent unique, mais scinde sa couche de sortie pour estimer deux vecteurs de paramètres distincts :
+\begin{itemize}
+    \item Un vecteur de moyennes $\mu$, représentant le centre géométrique de la région où l'image d'entrée doit être positionnée.
+    \item Un vecteur d'écarts-types ou plus précisément de log-variances $\log(\sigma^2)$, modélisant le degré d'incertitude ou l'étendue de cette région.
+\end{itemize}
+
+Le processus d'échantillonnage consiste ensuite à extraire un vecteur latent $z$ depuis la loi normale ainsi définie : $z \sim \mathcal{Q}(z|x) = \mathcal{N}(\mu, \sigma^2)$. Grâce à ce mécanisme, deux images conceptuellement proches ne seront plus projetées sur des coordonnées distantes, mais sur des distributions probabilistes qui se chevauchent partiellement. Le décodeur apprend ainsi à reconstruire des transitions fluides entre les différentes classes de données.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.5cm,
+        block/.style={draw, fill=engineering!10, rectangle, minimum width=2.5cm, minimum height=0.8cm, align=center, rounded corners=2pt},
+        latent/.style={draw, fill=green!10, circle, minimum size=0.9cm, align=center},
+        arrow/.style={-Latex, thick, engineering}
+    ]
+        % Noeuds du flux
+        \node (input) [block, fill=gray!10] {Image d'Entrée $x$};
+        \node (encoder) [block, below=of input] {Couches de l'Encodeur\\(Convolutions / Denses)};
+        
+        % Séparation en mu et sigma
+        \node (mu) [block, below left=of encoder, xshift=0.5cm] {Vecteur Moyenne\\$\mu$};
+        \node (sigma) [block, below right=of encoder, xshift=-0.5cm] {Log-Variance\\$\log(\sigma^2)$};
+        
+        % Aléa et Reparamétrisation
+        \node (epsilon) [latent, fill=orange!10, below=of sigma, xshift=-1.5cm] {$\epsilon$};
+        \node (reparam) [block, below=of mu, xshift=1.5cm] {Astuce de Reparamétrisation\\$z = \mu + \sigma \odot \epsilon$};
+        
+        % Décodeur et Sortie
+        \node (decoder) [block, below=of reparam] {Couches du Décodeur\\(Déconvolutions / Denses)};
+        \node (output) [block, fill=gray!10, below=of decoder] {Image Reconstruite $\hat{x}$};
+
+        % Connexions
+\draw[arrow] (input)   -- (encoder);
+
+\draw[arrow] (encoder.south) -- ++(0,-0.4) -| (mu.north);
+\draw[arrow] (encoder.south) -- ++(0,-0.4) -| (sigma.north);
+
+\draw[arrow] (mu.south)      -- ++(0,-0.4) -| (reparam.north);
+\draw[arrow] (sigma.south)   -- ++(0,-0.4) -| (reparam.north);
+
+\draw[arrow] (epsilon) -- (reparam);
+
+\draw[arrow] (reparam) -- (decoder);
+\draw[arrow] (decoder) -- (output);
+        
+        
+        
+        
+       
+    \end{tikzpicture}
+    \caption{Architecture générale d'un Auto-encodeur Variationnel (VAE) avec le mécanisme de reparamétrisation.}
+    \label{fig:vae_architecture}
+    
+\end{figure}
+
+
+
+
+\section{L'Astuce de Reparamétrisation (\textit{Reparameterization Trick})}
+
+L'introduction de ce processus aléatoire pose un défi de taille lors de la mise en œuvre pratique. L'opération d'échantillonnage ($z \sim \mathcal{N}(\mu, \sigma^2)$) introduit une composante stochastique au milieu du réseau de neurones. En d'autres termes, tirer un nombre au hasard est une opération purement aléatoire qui ne possède pas d'expression mathématique continue. Par conséquent, elle est « non dérivable ». 
+
+Or, les réseaux de neurones apprennent en calculant des dérivées (le gradient) de la sortie vers l'entrée pour ajuster leurs poids. Face à un processus aléatoire, la rétropropagation du gradient (\textit{backpropagation}) se retrouve bloquée face à un mur mathématique. L'encodeur ne reçoit plus aucun signal d'erreur et cesse d'apprendre.
+
+Pour lever ce verrou technique, l'astuce de reparamétrisation consiste à externaliser la source d'aléa pour contourner le blocage. On génère une variable de bruit indépendante $\epsilon$, tirée d'une loi normale standard :
+\begin{equation}
+    \epsilon \sim \mathcal{N}(0, I)
+\end{equation}
+
+Le vecteur latent $z$ est alors reconstitué de manière purement déterministe en appliquant une transformation linéaire aux paramètres appris par l'encodeur :
+\begin{equation}
+    z = \mu + \sigma \odot \epsilon
+\end{equation}
+Le symbole $\odot$ désigne le produit de Hadamard (multiplication élément par élément). Sous cette forme astucieuse, le réseau ne dérive plus l'étape aléatoire $\epsilon$, mais uniquement $\mu$ et $\sigma$. Le flux de calcul redevient entièrement dérivable et l'optimisation globale du réseau de bout en bout est de nouveau possible.
+
+\section{Fonction de Perte Composite}
+
+L'entraînement d'un VAE n'est rien d'autre qu'un arbitrage permanent entre deux forces contradictoires, matérialisé par une fonction de perte composite:
+\begin{equation}
+    \mathcal{L}_{\text{VAE}} = \mathcal{L}_{\text{Reconstruction}} + \mathcal{L}_{\text{Régularisation}}
+\end{equation}
+
+\subsection{L'Erreur de Reconstruction}
+Le premier terme quantifie la capacité du modèle à restituer fidèlement l'image initiale après sa compression. Selon le format des données d'entrée, on emploie fréquemment l'erreur quadratique moyenne (MSE) pour des valeurs de pixels continues, ou l'entropie croisée binaire (BCE) lorsque les images sont normalisées de manière stricte entre 0 et 1:
+\begin{equation}
+    \mathcal{L}_{\text{Reconstruction}} = \frac{1}{2} \sum_{i} (x_i - \hat{x}_i)^2
+\end{equation}
+
+
+\subsection{La Divergence de Kullback-Leibler}
+Si le réseau ne cherchait qu'à minimiser l'erreur de reconstruction, il contournerait la contrainte probabiliste en réduisant les variances vers zéro, recréant ainsi un auto-encodeur standard discontinu. Pour empêcher cette dérive, le terme de régularisation utilise la divergence de Kullback-Leibler (KL).
+
+Nommée d'après les mathématiciens et cryptanalystes Solomon Kullback et Richard Leibler qui l'ont introduite en 1951, cette mesure issue de la théorie de l'information quantifie la différence fondamentale entre deux distributions de probabilité. Dans notre architecture, elle mesure l'écart entre la distribution prédite par l'encodeur $\mathcal{Q}(z|x)$ et une distribution \textit{a priori} de référence, choisie comme étant la loi normale standard $\mathcal{P}(z) = \mathcal{N}(0, I)$. 
+
+La résolution analytique de cette intégrale donne la formule suivante :
+\begin{equation}
+    \mathcal{L}_{\text{KL}} = -\frac{1}{2} \sum_{j=1}^{D} \left( 1 + \log(\sigma_j^2) - \mu_j^2 - \sigma_j^2 \right)
+\end{equation}
+où $D$ représente le nombre de dimensions de l'espace latent. Ce terme agit comme une force de rappel ou un « élastique ». Il empêche l'encodeur d'éparpiller les données et ramène les distributions vers le centre du repère. Il garantit ainsi que l'espace latent reste compact et sans zones vides aberrantes, le rendant parfaitement exploitable pour générer des images fluides et inédites.
+
+\section{Résultats Expérimentaux et Visualisation}
+
+Pour valider l'efficacité de notre approche générative, nous avons projeté les résultats de notre modèle entraîné sur un espace latent à deux dimensions ($z \in \mathbb{R}^2$). Cette restriction dimensionnelle contraint fortement le modèle, mais offre l'avantage de pouvoir visualiser directement la topologie de l'espace appris.
+
+\subsection{Cartographie de l'Espace Latent}
+
+La figure \ref{fig:latent_scatter} illustre la projection des données de test par notre encodeur probabiliste. Contrairement à un auto-encodeur classique (\textit{Vanilla AE}) où les classes tendent à former des îlots dispersés et séparés par des zones mortes, nous observons ici l'effet de la régularisation par la divergence de Kullback-Leibler. 
+
+Les différentes classes (représentées par des couleurs distinctes) forment des amas (\textit{clusters}) denses qui se concentrent naturellement autour de l'origine du repère $(0,0)$, respectant ainsi la loi normale standard imposée. Surtout, ces régions se chevauchent de manière fluide au niveau de leurs frontières, ce qui garantit l'absence de "trous" stochastiques dans notre espace de représentation.
+
+\begin{figure}[H]
+    \centering
+    % Remplace 'espace_latent.png' par le nom exact de ton fichier image sur Overleaf
+    \includegraphics[width=0.7\textwidth]{espace_latent}
+    \caption{Projection 2D de l'espace latent. La régularisation KL force une distribution compacte et continue des différentes classes.}
+    \label{fig:latent_scatter}
+\end{figure}
+
+\subsection{Synthèse et Manifold Génératif}
+
+La continuité de l'espace latent démontrée précédemment permet l'échantillonnage de nouvelles données. Pour la figure \ref{fig:manifold}, nous avons totalement déconnecté l'encodeur. Nous avons balayé artificiellement une grille de coordonnées régulières dans l'espace latent (de $-2$ à $+2$ sur les axes $z_1$ et $z_2$), et injecté ces coordonnées pures directement dans notre décodeur.
+
+Le résultat forme un \textit{manifold} génératif. On observe non seulement que le décodeur est capable de synthétiser des images nettes à partir de coordonnées qu'il n'a jamais vues durant l'entraînement, mais surtout que la transition d'une topologie à une autre (par exemple, la métamorphose progressive d'un chiffre vers un autre) s'effectue de manière continue et cohérente. C'est la signature d'un espace latent parfaitement régularisé.
+
+\begin{figure}[H]
+    \centering
+    % Remplace 'generations.png' par le nom exact de ton fichier image sur Overleaf
+    \includegraphics[width=0.7\textwidth]{generations}
+    \caption{Génération d'images inédites par le décodeur en balayant l'espace latent 2D (Manifold). Les transitions morphologiques sont fluides et continues.}
+    \label{fig:manifold}
+\end{figure}
+
+% ============================================================
+%  CHEF DE FILE — MEMBRE 4 : APPLICATIONS & SYNTHÈSE
+% ============================================================
+\chapter{Applications Spécifiques, Analyse et Conclusion}
+\label{ch:applications_analyse_conclusion}
+
+% ============================================================
+\section{Applications des auto-encodeurs}
+\label{sec:applications_ae}
+
+La capacité des auto-encodeurs à apprendre une représentation compacte et informative des données les rend utiles bien au-delà de la simple reconstruction de signaux sains. Trois grands domaines applicatifs se distinguent par l'exploitation directe du goulot d'étranglement structurel du réseau.
+
+\subsection{Détection d'anomalies}
+\label{subsec:detection_anomalies}
+
+Le principe de la détection d'anomalies repose sur une propriété mathématique fondamentale : un modèle contraint, entraîné \emph{exclusivement sur des données qualifiées de normales}, apprend à compresser et à reconstruire fidèlement ce type de distribution, mais échoue systématiquement à restituer une configuration inédite qu'il n'a jamais rencontrée.
+
+\subsubsection*{Principe de fonctionnement}
+
+Lors de la phase d'inférence, l'écart mathématique entre le signal d'entrée et le signal reconstruit est quantifié par l'erreur quadratique moyenne (MSE, \textit{Mean Squared Error}) :
+
+\begin{equation}
+    \mathcal{L}_{\text{recon}}(x) = \frac{1}{n} \sum_{i=1}^{n} \bigl(x_i - \hat{x}_i\bigr)^2
+\end{equation}
+
+Où $x$ représente le vecteur d'entrée original et $\hat{x}$ désigne la sortie générée par le décodeur. Pour automatiser la surveillance, un seuil critique $\tau$ est défini empiriquement à partir des percentiles élevés de l'erreur sur le jeu de validation sain. La règle de décision logique s'établit ainsi :
+
+\begin{equation}
+    \text{Décision} =
+    \begin{cases}
+        \text{Normal}   & \text{si } \mathcal{L}_{\text{recon}}(x) \leq \tau \\
+        \text{Anomalie} & \text{si } \mathcal{L}_{\text{recon}}(x) >    \tau
+    \end{cases}
+\end{equation}
+
+Une hausse brutale du résidu de reconstruction $\mathcal{L}_{\text{recon}}(x)$ valide le fait que la donnée courante dévie de la variété apprise par l'encodeur.
+
+\subsubsection*{Exemple concret : La cybersécurité}
+
+Dans la surveillance des flux réseaux et la détection de fraudes bancaires, un auto-encodeur est instancié uniquement sur des profils de connexions légitimes et des transactions standards. Dès qu'une attaque par déni de service (DDoS) ou une tentative d'intrusion survient, la signature temporelle et volumétrique du paquet réseau dévie de la norme. Ne sachant pas encoder cette anomalie, le réseau génère un résidu élevé, déclenchant immédiatement une alerte de sécurité.
+
+\subsubsection*{Validation expérimentale : Le protocole MNIST}
+
+Pour valider ce paradigme de manière rigoureuse, les expérimentations pratiques menées dans le cadre de ce projet ont appliqué ce protocole au jeu de données MNIST. Le réseau a été isolé lors de sa phase d'apprentissage en excluant la totalité des occurrences d'une classe spécifique (le chiffre 9). Lors de la phase de test, confronté à un mélange de chiffres connus (0 à 8) et inconnus (9), le modèle commet une erreur de reconstruction significativement plus élevée sur la classe exclue, confirmant l'efficacité du seuillage non supervisé.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.80\textwidth]{learning_curve.png}
+    \caption{Évolution de la perte quadratique moyenne (MSE) en entraînement et en validation. La superposition des deux courbes exclut tout phénomène de sur-apprentissage.}
+    \label{fig:learning_curve}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{distribution_erreurs2.png}
+    \caption{Distribution empirique des erreurs de reconstruction sur le jeu de test MNIST. La séparation nette des densités de probabilité valide la pertinence du seuil mathématique $\tau$.}
+    \label{fig:distribution_erreurs}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    % Première image (occupe 45% de la largeur du texte)
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{classes_normales.png}
+        \caption{classe normale bien reconstruite}
+        \label{fig:class_norm}
+    \end{subfigure}
+    \hfill % Ajoute un espace horizontal optimal entre les deux images
+    % Seconde image (occupe 45% de la largeur du texte)
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{anomalies_9_detectees2.png}
+        \caption{anomalie 9 détectées}
+        \label{fig:sous_fig2}
+    \end{subfigure}
+    
+    \caption{Analyse visuelle des résidus de reconstruction : le modèle restitue correctement les classes saines (0--8) mais échoue sur la structure géométrique du chiffre 9, matérialisant visuellement l'anomalie.}
+    \label{fig:AD}
+\end{figure}
+
+
+\subsection{Réduction de dimension}
+\label{subsec:reduction_dimension}
+
+La réduction de dimension consiste à projeter un espace initial de forte cardinalité vers un espace latent restreint tout en minimisant la perte d'information. L'apport des auto-encodeurs réside dans l'utilisation de fonctions d'activation non linéaires (telles que la fonction ReLU).
+
+Contrairement à l'Analyse en Composantes Principales (ACP), restreinte aux projections strictement linéaires et orthogonales, les couches d'un auto-encodeur profond agissent comme des approximateurs universels capables de capturer des géométries de données hautement complexes (variétés non linéaires ou \textit{manifolds}). Cette propriété garantit une compression plus compacte et une meilleure séparation des concepts abstraits au sein du goulot d'étranglement.
+
+\subsubsection*{Application à la visualisation de données}
+
+En forçant la dimension latente à converger graphiquement vers un espace bidimensionnel ou tridimensionnel ($z \in \mathbb{R}^2$), ou en appliquant des algorithmes de projection sur l'espace latent extrait, les structures intrinsèques des grands jeux de données non étiquetés peuvent être cartographiées sous forme de nuages de points. Les observations partageant des caractéristiques sémantiques similaires se regroupent naturellement en grappes géométriques distinctes (clusters), facilitant l'exploration de données massives.
+
+\subsection{Débruitage d'images}
+\label{subsec:debruitage_images}
+
+Les auto-encodeurs de débruitage (\textit{Denoising Autoencoders}) résolvent le problème de la reconstruction d'un signal propre $x$ à partir d'une entrée intentionnellement altérée $\tilde{x}$, définie par :
+
+\begin{equation}
+    \tilde{x} = x + \epsilon
+\end{equation}
+
+Où $\epsilon$ représente une perturbation stochastique (bruit gaussien, bruit impulsionnel ou masquage partiel). 
+
+Le réseau est entraîné en minimisant l'écart entre la sortie du décodeur et l'image originale non bruitée $x$. Cette contrainte fonctionnelle interdit au modèle de développer une simple fonction identité (copie pure de l'entrée). Pour réussir sa tâche, l'architecture doit impérativement apprendre les corrélations statistiques stables du signal d'origine afin de soustraire le bruit aléatoire. Comparativement aux filtres mathématiques classiques (gaussien ou médian) qui tendent à lisser uniformément les pixels, l'auto-encodeur préserve la netteté des contours et la granularité des textures en exploitant sa connaissance globale de la structure de l'image.
+
+% ============================================================
+\section{Limites des auto-encodeurs}
+\label{sec:limites_ae}
+
+Malgré leurs performances, les auto-encodeurs sont soumis à des contraintes techniques strictes qui conditionnent leur viabilité opérationnelle en production.
+
+\subsection{Sur-apprentissage et identité triviale}
+
+Le sur-apprentissage est un problème central en apprentissage automatique : le modèle mémorise les données d’entraînement au lieu d’apprendre leurs caractéristiques générales. Dans le contexte des autoencodeurs, ce phénomène se manifeste lorsque le modèle apprend à copier les entrées plutôt qu’à les comprendre. 
+Un auto-encodeur en sur-apprentissage(overfitting) obtient une erreur de reconstruction très faible sur les données d’entraînement, mais généralise mal aux nouvelles données. On peut détecter ce phénomène en observant un écart croissant entre la perte d’entraînement et la perte de validation : 
+
+\begin{equation}
+    \mathcal{L}_{\text{val}} \gg \mathcal{L}_{\text{train}}
+\end{equation}
+
+Pour y remédier, plusieurs techniques existent : la régularisation L1 ou L2 sur les poids, le dropout, l’augmentation de données, ou encore l’utilisation d’un espace latent de dimension suffisamment petite pour forcer le modèle à généraliser.  
+
+\subsection{Coût computationnel et volumétrie}
+
+L’entraînement d’un auto-encodeur sur des données de grande dimension (images haute résolution, volumes 3D médicaux, séquences longues) exige des ressources de calcul considérables :
+ \begin{itemize}
+     \item \textbf{Mémoire GPU} :les réseaux convolutifs profonds pour le traitement d’images nécessitent plusieurs gigaoctets de mémoire vive graphique.  
+     \item \textbf{Durée d’entraînement} : sur des jeux de données importants, l’entraînement peut nécessiter plusieurs heures, voire plusieurs jours, même avec du matériel dédié.
+     \item \textbf{Coût énergétique} :la multiplication des paramètres a un impact environnemental non négligeable, un enjeu de plus en plus discuté dans la communauté de l’intelligence artificielle.
+ \end{itemize}
+ Cette contrainte limite l’accès aux auto-encodeurs complexes pour les équipes sans accès à des infrastructures de calcul haute performance. 
+
+\subsection{Sensibilité et étalonnage des hyperparamètres}
+
+Les performances d’un auto-encodeur sont extrêmement sensibles au choix de ses hyperparamètres. 
+Parmi les plus critiques :
+\begin{itemize}
+    \item \textbf{Dimension de l’espace latent} : trop petite, la reconstruction est de mauvaise qualité; trop grande, le modèle sur-apprend ou ne compresse pas suffisamment.
+    \item \textbf{Taux d’apprentissage (\textit{learning rate})} : un taux trop élevé empêche la convergence; trop faible, il ralentit drastiquement l’entraînement. 
+    \item \textbf{Architecture du réseau }: le nombre de couches, le nombre de neurones par couche, et le type de couches (denses ou convolutives) doivent être adaptés à chaque tâche spécifique.
+    \item \textbf{Seuil d’anomalie } : dans le cadre de la détection d’anomalies, le seuil doit être calibré manuellement et dépend du domaine d’application, ce qui complique le déploiement automatique.
+\end{itemize}
+
+Il n’existe pas de configuration universelle optimale : chaque jeu de données et chaque tâche exigent une phase d’expérimentation (hyperparameter tuning) qui peut s’avérer longue et coûteuse. 
+
+% ============================================================
+\section{Applications Industrielles et Modernes}
+\label{sec:applications_industrielles}
+
+Les architectures basées sur les auto-encodeurs se positionnent aujourd'hui comme des briques fondamentales au sein de systèmes de production industriels et d'imagerie de pointe.
+
+\subsection{Médecine et imagerie diagnostique}
+
+Dans le secteur médical, la réduction du temps d'acquisition des examens est critique pour le confort et la sécurité des patients. Les auto-encodeurs de débruitage permettent de reconstruire des examens IRM ou des scanners de haute précision à partir de signaux volontairement dégradés ou obtenus via de faibles doses de rayonnements ionisants. En parallèle, l'analyse des anomalies résiduelles aide à l'identification précoce de structures tumorales ou de lésions cérébrales en isolant les tissus dont la signature graphique s'écarte des modèles d'anatomies saines préalablement appris.
+
+\subsection{Industrie 4.0 et maintenance prédictive}
+
+L'intégration massive de capteurs IoT au sein des chaînes de fabrication permet d'enregistrer en continu les signaux physiques (vibrations mécaniques, signatures thermiques, consommation électrique) des machines de production. Les auto-encodeurs capturent la dynamique de fonctionnement nominal d'une installation en conditions normales. Tout début d'usure de roulement, désalignement d'arbre ou échauffement anormal engendre une dérive du signal électrique. L'élévation de la MSE détecte ces défaillances latentes à un stade précoce, permettant de planifier une intervention de maintenance prédictive avant l'arrêt complet de la chaîne.
+
+\subsection{Vision industrielle et contrôle qualité}
+
+Le contrôle visuel automatisé sur les lignes de production utilise ces réseaux pour inspecter la conformité de pièces métalliques, de vitrages ou de textiles à haute cadence. Le modèle n'exigeant aucun exemple de défaut lors de son apprentissage, il s'affranchit de la difficulté liée à la rareté des images de pannes. Toute pièce présentant un éclat, une rayure ou une non-conformité géométrique est immédiatement écartée du flux de production par le système de vision artificielle en raison de son défaut de reconstruction locale.
+
+\subsection{Fondements de l'IA générative moderne}
+
+Au-delà de l'analyse, l'auto-encodeur constitue le socle des révolutions génératives actuelles. L'introduction des auto-encodeurs variationnels (VAE) a permis de transformer l'espace latent en un espace probabiliste continu, autorisant la génération de données synthétiques par échantillonnage statistique. Cette approche est aujourd'hui exploitée par les grands modèles de diffusion (tels que Stable Diffusion), qui effectuent leurs calculs lourds de réduction de bruit non pas sur l'image native, trop volumineuse, mais au sein de l'espace latent hautement optimisé d'un auto-encodeur convolutif pré-entraîné.
+
+% ============================================================
+\section{Analyse Comparative des Performances de l'Équipe}
+\label{sec:analyse_comparative}
+
+Pour clore cette étude, un benchmark a été conduit afin de consolider l'ensemble des travaux de l'équipe. Le graphique ci-dessous compile les dynamiques d'apprentissage et de convergence des différentes variantes étudiées, à savoir le modèle de base (\textit{Vanilla AE}), les approches régularisées (\textit{Sparse} et \textit{Denoising AE}), le modèle probabiliste (\textit{VAE}) et le modèle dédié à l'isolement d'anomalies.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{comparaison_modeles.png}
+    \caption{Courbes comparatives de la perte d'entraînement (Train MSE) en fonction des époques pour l'ensemble des architectures de l'équipe.}
+    \label{fig:comparaison_loss_equipe}
+\end{figure}
+
+\subsubsection{Analyse et discussion des courbes de convergence}
+
+Le graphique comparatif des dynamiques d’apprentissage met en évidence l'impact direct des contraintes structurelles et des régularisations sur la capacité de reconstruction brute des réseaux :
+
+\textbf{Le modèle Vanilla AE (courbe bleue)} présente la convergence la plus rapide et atteint l'erreur résiduelle la plus faible (Train MSE $\approx$ 0,007). Ce comportement est attendu : exempt de toute contrainte, le réseau exploite pleinement sa bande passante pour optimiser une copie déterministe pixel à pixel des données d'entrée.
+\textbf{Les variantes régularisées (Sparse AE en orange et Denoising AE en vert)} stabilisent leur convergence à des niveaux de perte intermédiaires (respectivement $\approx$ 0,022 et 0,024). Pour le \textbf{\textit{Sparse AE}}, la pénalité $L_1$ restreint la capacité du modèle en forçant l'extinction de nombreux neurones latents. Pour le \textbf{\textit{Denoising AE}}, la tâche est intrinsèquement plus complexe puisque le réseau doit extraire des caractéristiques robustes à partir d'une entrée corrompue pour restituer un signal propre. Cette hausse de la perte d'entraînement n'est pas une contre-performance, mais le coût mathématique nécessaire à l'acquisition d'un fort pouvoir de généralisation.
+\textbf{Le modèle VAE (courbe rouge)} ferme la marche avec la perte de reconstruction la plus élevée ($\approx$ 0,028). Cette dynamique traduit la contrainte géométrique imposée à son espace latent : en forçant les variables à s'ajuster à une distribution normale standard (via la divergence de Kullback-Leibler), le VAE sacrifie délibérément une fraction de la précision de reconstruction brute au profit d'une topologie probabiliste continue, indispensable aux applications génératives.
+
+\textbf{Bilan} : Ce benchmark valide la hiérarchie théorique des architectures. Plus on applique de contraintes à l'espace latent pour lui donner une utilité métier (sécurité, robustesse, génération), plus l'erreur de reconstruction sur le jeu d'entraînement augmente. C'est le compromis fondamental de l'apprentissage non supervisé par auto-encodeur.
+
+% ============================================================
+\section{Conclusion Générale}
+\label{sec:conclusion_generale}
+
+Ce projet d'ingénierie a permis d'explorer de manière exhaustive les mécanismes fondamentaux, les variantes structurelles et le cycle de vie des architectures d'auto-encodeurs. En partant d'un socle technique commun basé sur un modèle standard (\textit{Vanilla AE}), notre étude a mis en évidence l'importance cruciale du goulot d'étranglement pour forcer la compression et l'extraction des caractéristiques sémantiques essentielles des données.
+
+Au fil de notre analyse, nous avons démontré comment l'introduction de contraintes mathématiques (telles que la régularisation $L_1$) et structurelles (injection de bruit gaussien) transforme un simple outil de reconstruction en un système de filtrage robuste, capable d'ignorer les perturbations pour restaurer des signaux corrompus. L'exploration s'est ensuite naturellement orientée vers les approches probabilistes avec l'étude des auto-encodeurs variationnels (VAE). Cette évolution souligne le potentiel des espaces latents modélisés par des distributions statistiques, ouvrant la voie à l'intelligence artificielle générative et à la création de données synthétiques inédites.
+
+La mise en œuvre pratique de ces modèles a confirmé leur viabilité et leur pertinence dans des contextes industriels critiques. L'utilisation de l'erreur quadratique moyenne (MSE) de reconstruction comme critère de décision s'est révélée être une méthode particulièrement efficace pour la détection non supervisée d'anomalies, contournant l'absence récurrente de données étiquetées sur le terrain. 
+
+En somme, ce travail illustre comment une architecture contrainte force un réseau de neurones à comprendre la structure profonde de l'information plutôt qu'à la mémoriser superficiellement. La maîtrise des espaces latents acquise lors de ce projet constitue un socle d'expertise solide, indispensable pour appréhender les architectures analytiques de pointe qui façonnent l'intelligence artificielle contemporaine.
+
+%%==============================================================
+%% ANNEXES ET BIBLIOGRAPHIE
+%%==============================================================
+\appendix
+\chapter{Code de démarrage fourni (PyTorch)}
+
+Voici le code de base, incluant la préparation des données, l'architecture Vanilla AE et la boucle d'entraînement standard pour le projet.
+
+\begin{lstlisting}[caption=Pipeline de base du projet]
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, random_split
+from torchvision import datasets, transforms
+
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# 1. DataLoader MNIST
+def get_mnist_loaders(batch_size=128, val_ratio=0.1):
+    transform = transforms.Compose([transforms.ToTensor()])
+    full_train = datasets.MNIST(root='./data', train=True,
+                                download=True, transform=transform)
+    n_val = int(len(full_train) * val_ratio)
+    train_set, val_set = random_split(full_train, [len(full_train)-n_val, n_val],
+                                      generator=torch.Generator().manual_seed(42))
+    test_set = datasets.MNIST(root='./data', train=False,
+                              download=True, transform=transform)
+    return (DataLoader(train_set, batch_size=batch_size, shuffle=True),
+            DataLoader(val_set, batch_size=batch_size, shuffle=False),
+            DataLoader(test_set, batch_size=batch_size, shuffle=False))
+
+# 2. Architecture Vanilla Autoencoder
+class VanillaAutoencoder(nn.Module):
+    def __init__(self, input_dim=784, hidden_dims=[256, 128], latent_dim=32):
+        super().__init__()
+        encoder_layers, prev_dim = [], input_dim
+        for h_dim in hidden_dims:
+            encoder_layers.extend([nn.Linear(prev_dim, h_dim), nn.ReLU()])
+            prev_dim = h_dim
+        encoder_layers.append(nn.Linear(prev_dim, latent_dim))
+        self.encoder = nn.Sequential(*encoder_layers)
+
+        decoder_layers, prev_dim = [], latent_dim
+        for h_dim in reversed(hidden_dims):
+            decoder_layers.extend([nn.Linear(prev_dim, h_dim), nn.ReLU()])
+            prev_dim = h_dim
+        decoder_layers.extend([nn.Linear(prev_dim, input_dim), nn.Sigmoid()])
+        self.decoder = nn.Sequential(*decoder_layers)
+
+    def forward(self, x):
+        if x.dim() == 4: x = x.view(x.size(0), -1)
+        z = self.encoder(x)
+        return self.decoder(z), z
+
+# 3. Boucle d'entrainement
+def training_loop(model, train_loader, val_loader, num_epochs=20, lr=1e-3):
+    optimizer, criterion = torch.optim.Adam(model.parameters(), lr=lr), nn.MSELoss()
+    for epoch in range(num_epochs):
+        model.train()
+        train_loss = sum(criterion(model(x.to(DEVICE))[0], x.to(DEVICE)).item() * x.size(0) for x, _ in train_loader)
+        model.eval()
+        val_loss = sum(criterion(model(x.to(DEVICE))[0], x.to(DEVICE)).item() * x.size(0) for x, _ in val_loader)
+        print(f"Epoch {epoch+1} | Train Loss: {train_loss/len(train_loader.dataset):.4f} | Val Loss: {val_loss/len(val_loader.dataset):.4f}")
+\end{lstlisting}
+
+% =====================================================================
+% SCRIPT DU SPARSE AUTOENCODER (SAE)
+% =====================================================================
+\chapter{Scripts d'Exploration du Sparse Autoencoder (SAE)}
+
+Ce script contient la fonction de recherche d'hyperparamètres pour la contrainte de parcimonie $L_1$, ainsi que l'ensemble des procédures de génération des courbes de convergence, de la courbe en U et de la cartographie globale de sparsité des 1024 neurones latents.
+
+\begin{lstlisting}[caption=Pipeline d'exploration et d'analyse des profils du SAE]
+import copy
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import matplotlib.pyplot as plt
+import numpy as np
+
+# --- 1. Entrainement et recherche d'hyperparametres L1 ---
+def sae_hyperparameter_search(train_loader, val_loader, lambda_values, num_epochs=20):
+    results_histories = {}
+    final_val_losses = []
+    models_saved = {}
+    
+    for l_val in lambda_values:
+        print(f"\n--- Entrainement SAE (Plat - Overcomplete) | Lambda = {l_val} ---")
+        
+        # Architecture plate sur-complete (784 -> 1024 -> 784)
+        model = VanillaAutoencoder(input_dim=784, hidden_dims=[], latent_dim=1024).to(DEVICE)
+        
+        # Injection de l'activation ReLU en fin d'encodeur pour la sparsite
+        model.encoder.add_module("sparsity_relu", nn.ReLU())
+        
+        criterion = nn.MSELoss()
+        optimizer = optim.Adam(model.parameters(), lr=1e-3)
+        history = {"train_loss": [], "val_loss": []}
+        
+        for epoch in range(num_epochs):
+            # Phase d'entrainement
+            model.train()
+            train_loss = 0.0
+            for batch_x, _ in train_loader:
+                batch_x = batch_x.to(DEVICE)
+                batch_x_flat = batch_x.view(batch_x.size(0), -1)
+                
+                optimizer.zero_grad()
+                x_recon, z = model(batch_x) 
+                
+                # Optimisation conjointe : MSE de reconstruction + Penalisation L1
+                mse = criterion(x_recon, batch_x_flat)
+                l1_penalty = torch.mean(torch.abs(z)) 
+                loss = mse + l_val * l1_penalty
+                
+                loss.backward()
+                optimizer.step()
+                train_loss += mse.item() * batch_x.size(0) 
+                
+            train_loss /= len(train_loader.dataset)
+            history["train_loss"].append(train_loss)
+            
+            # Phase de validation
+            model.eval()
+            val_loss = 0.0
+            with torch.no_grad():
+                for batch_x, _ in val_loader:
+                    batch_x = batch_x.to(DEVICE)
+                    batch_x_flat = batch_x.view(batch_x.size(0), -1)
+                    x_recon, z = model(batch_x)
+                    mse = criterion(x_recon, batch_x_flat)
+                    val_loss += mse.item() * batch_x.size(0)
+                    
+            val_loss /= len(val_loader.dataset)
+            history["val_loss"].append(val_loss)
+            
+        results_histories[l_val] = history
+        final_val_losses.append(history["val_loss"][-1])
+        models_saved[l_val] = copy.deepcopy(model)
+        print(f"MSE Final (Validation) : {history['val_loss'][-1]:.5f}")
+        
+    return results_histories, final_val_losses, models_saved
+
+# --- 2. Lancement de l'experience SAE ---
+lambdas_to_test = [0.0, 1e-4, 1e-3, 1e-2, 5e-2]
+sae_histories, sae_final_mse, sae_models = sae_hyperparameter_search(
+    train_loader, val_loader, lambdas_to_test, num_epochs=20
+)
+lambdas_str = [str(l) for l in lambdas_to_test]
+
+# --- 3. Trace des graphiques bilans (Convergence et Courbe en U) ---
+plt.figure(figsize=(8, 6))
+for l_val in lambdas_to_test:
+    plt.plot(sae_histories[l_val]['val_loss'], label=fr'$\lambda$={l_val}')
+plt.title('Evolution du MSE (Validation) au cours des epoques', fontsize=12)
+plt.xlabel('Epochs', fontsize=11)
+plt.ylabel('MSE', fontsize=11)
+plt.legend()
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.tight_layout()
+plt.savefig('sae_1_convergence_mse.eps', format='eps', bbox_inches='tight')
+plt.show()
+
+plt.figure(figsize=(8, 6))
+plt.plot(lambdas_str, sae_final_mse, marker='o', color='red', linewidth=2)
+plt.title(r'Impact de $\lambda$ sur l\'erreur de reconstruction finale', fontsize=12)
+plt.xlabel(r'Valeur de $\lambda$ (Penalite $L_1$)', fontsize=11)
+plt.ylabel('MSE Final sur Validation', fontsize=11)
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.tight_layout()
+plt.savefig('sae_2_ucurve_impact.eps', format='eps', bbox_inches='tight')
+plt.show()
+
+# --- 4. Visualisation qualitative des chiffres reconstruits ---
+def visualize_single_image_sae_grid(models_dict, test_loader, lambdas):
+    dataiter = iter(test_loader)
+    images, _ = next(dataiter)
+    single_image = images[3:4].to(DEVICE)
+    
+    num_cols = len(lambdas) + 1
+    fig, axes = plt.subplots(nrows=1, ncols=num_cols, figsize=(num_cols * 3.2, 3.5))
+    fig.suptitle(r"Impact de la penalite $L_1$ sur un SAE plat sur-complet ($784 \rightarrow 1024 \rightarrow 784$)", fontsize=13, y=1.05)
+    
+    axes[0].imshow(single_image.cpu().squeeze(), cmap='gray')
+    axes[0].set_title("Original", fontweight='bold')
+    axes[0].axis('off')
+    
+    for idx, l_val in enumerate(lambdas):
+        model = models_dict[l_val]
+        model.eval()
+        with torch.no_grad():
+            reconstructed, _ = model(single_image)
+            reconstructed = reconstructed.view(28, 28)
+            
+        ax = axes[idx + 1]
+        ax.imshow(reconstructed.cpu(), cmap='gray')
+        
+        if l_val == 0.0:
+            ax.set_title(r"Vanilla ($\lambda=0$)" + "\n(Memorisation totale)")
+        elif l_val == lambdas[-1]:
+            ax.set_title(fr"Extreme ($\lambda={l_val}$)" + "\n(Trop eteint)")
+        else:
+            ax.set_title(fr"SAE ($\lambda={l_val}$)")
+        ax.axis('off')
+        
+    plt.tight_layout()
+    plt.savefig('sae_3_grid_reconstructions.eps', format='eps', bbox_inches='tight')
+    plt.show()
+
+visualize_single_image_sae_grid(sae_models, test_loader, lambdas_to_test)
+
+# --- 5. Analyse exhaustive de la sparsite sur le jeu de test ---
+def analyse_overall_sparsity_grid(models_dict, test_loader, lambdas_to_plot):
+    fig, axes = plt.subplots(nrows=len(lambdas_to_plot), ncols=1, figsize=(16, 3.2 * len(lambdas_to_plot)), sharex=True)
+    if len(lambdas_to_plot) == 1:
+        axes = [axes]
+        
+    fig.suptitle("Profil d'activation moyen des 1024 neurones sur l'integralite du dataset de test (MNIST)", fontsize=14, y=1.02)
+    
+    for idx, l_val in enumerate(lambdas_to_plot):
+        model = models_dict[l_val]
+        model.eval()
+        
+        all_z = []
+        with torch.no_grad():
+            for batch_x, _ in test_loader:
+                batch_x = batch_x.to(DEVICE)
+                _, z = model(batch_x)
+                all_z.append(z.cpu())
+                
+        all_z = torch.cat(all_z, dim=0)
+        avg_activations = torch.mean(all_z, dim=0).numpy()
+        
+        ax = axes[idx]
+        ax.bar(range(1024), avg_activations, color='royalblue', width=1.0, alpha=0.9)
+        ax.set_title(fr"Taux d'activation moyen pour Lambda = {l_val}", fontweight='bold', fontsize=11)
+        ax.set_ylabel("Activation Moyenne")
+        ax.grid(True, linestyle='--', alpha=0.4)
+        
+    axes[-1].set_xlabel("Index du neurone latent (0 à 1023)")
+    plt.tight_layout()
+    plt.savefig('sae_4_sparsity_neuron_profiles.eps', format='eps', bbox_inches='tight')
+    plt.show()
+
+analyse_overall_sparsity_grid(sae_models, test_loader, lambdas_to_test)
+\end{lstlisting}
+
+% =====================================================================
+% SCRIPT DU DENOISING AUTOENCODER (DAE)
+% =====================================================================
+\chapter{Scripts d'Exploration du Denoising Autoencoder (DAE)}
+
+Ce script regroupe les fonctions nécessaires à l'évaluation du modèle face à la corruption stochastique. Il prend en charge l'injection du bruit blanc gaussien et calcule les courbes comparatives de performance d'ingénierie (Erreur d'entrée versus Erreur résiduelle DAE).
+
+\begin{lstlisting}[caption=Pipeline d'exploration et d'analyse de robustesse du DAE]
+import copy
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import matplotlib.pyplot as plt
+import numpy as np
+
+# --- 1. Entrainement avec injection dynamique de bruit ---
+def dae_hyperparameter_search(train_loader, val_loader, noise_levels, num_epochs=20):
+    results_histories = {}
+    final_val_losses = []
+    models_saved = {}
+    
+    for sigma in noise_levels:
+        print(f"\n--- Entrainement DAE | Niveau de Bruit (Sigma) = {sigma} ---")
+        
+        # Architecture plate sur-complete identique pour l'apprentissage de variete
+        model = VanillaAutoencoder(input_dim=784, hidden_dims=[], latent_dim=1024).to(DEVICE)
+        criterion = nn.MSELoss()
+        optimizer = optim.Adam(model.parameters(), lr=1e-3)
+        history = {"train_loss": [], "val_loss": []}
+        
+        for epoch in range(num_epochs):
+            model.train()
+            train_loss = 0.0
+            for batch_x, _ in train_loader:
+                batch_x = batch_x.to(DEVICE)
+                batch_x_flat = batch_x.view(batch_x.size(0), -1)
+                
+                # Injection du bruit Gaussien additif sur l'entree
+                noise = sigma * torch.randn_like(batch_x_flat)
+                noisy_batch_x = batch_x_flat + noise
+                noisy_batch_x = torch.clamp(noisy_batch_x, 0.0, 1.0)
+                
+                optimizer.zero_grad()
+                x_recon, _ = model(noisy_batch_x) 
+                
+                # Cible propre de reference (batch_x_flat) pour interdire la solution identite
+                loss = criterion(x_recon, batch_x_flat)
+                
+                loss.backward()
+                optimizer.step()
+                train_loss += loss.item() * batch_x.size(0) 
+                
+            train_loss /= len(train_loader.dataset)
+            history["train_loss"].append(train_loss)
+            
+            # Phase de validation stochastique
+            model.eval()
+            val_loss = 0.0
+            with torch.no_grad():
+                for batch_x, _ in val_loader:
+                    batch_x = batch_x.to(DEVICE)
+                    batch_x_flat = batch_x.view(batch_x.size(0), -1)
+                    
+                    noise = sigma * torch.randn_like(batch_x_flat)
+                    noisy_batch_x = torch.clamp(batch_x_flat + noise, 0.0, 1.0)
+                    
+                    x_recon, _ = model(noisy_batch_x)
+                    loss = criterion(x_recon, batch_x_flat)
+                    val_loss += loss.item() * batch_x.size(0)
+                    
+            val_loss /= len(val_loader.dataset)
+            history["val_loss"].append(val_loss)
+            
+        results_histories[sigma] = history
+        final_val_losses.append(history["val_loss"][-1])
+        models_saved[sigma] = copy.deepcopy(model)
+        print(f"MSE Final (Validation) : {history['val_loss'][-1]:.5f}")
+        
+    return results_histories, final_val_losses, models_saved
+
+# --- 2. Lancement de l'experience DAE ---
+noise_levels_to_test = [0.0, 0.1, 0.3, 0.5]
+dae_histories, dae_final_mse, dae_models = dae_hyperparameter_search(
+    train_loader, val_loader, noise_levels_to_test, num_epochs=20
+)
+noise_str = [str(s) for s in noise_levels_to_test]
+
+# --- 3. Trace des performances d'ingenierie du DAE ---
+plt.figure(figsize=(8, 5))
+for sigma in noise_levels_to_test:
+    plt.plot(dae_histories[sigma]['val_loss'], label=fr'$\sigma$={sigma}')
+plt.title('DAE : Evolution du MSE de Validation au cours des epoques')
+plt.xlabel('Epochs')
+plt.ylabel('MSE (Calcule sur image propre)')
+plt.legend()
+plt.grid(True, linestyle='--', color='lightgray')
+plt.tight_layout()
+plt.savefig('dae_1_convergence.eps', format='eps', bbox_inches='tight')
+plt.show()
+
+# Calcul de la courbe de reference mathematique du bruit applique
+input_noise_mse = [s**2 if s > 0 else 0.0 for s in noise_levels_to_test]
+
+plt.figure(figsize=(8, 5))
+plt.plot(noise_str, input_noise_mse, marker='x', linestyle='--', color='black', label="Image Bruitee d'entree")
+plt.plot(noise_str, dae_final_mse, marker='o', linestyle='-', color='crimson', linewidth=2, label="Image Debruitee (DAE)")
+plt.title("Efficacite du DAE : Erreur d'entree vs Erreur de sortie")
+plt.xlabel(fr'Intensite du bruit gaussien ($\sigma$)')
+plt.ylabel('MSE Final')
+plt.legend()
+plt.grid(True, linestyle='--', color='lightgray')
+plt.tight_layout()
+plt.savefig('dae_2_efficacite.eps', format='eps', bbox_inches='tight')
+plt.show()
+
+# --- 4. Generation de la matrice qualitative de filtrage ---
+def visualize_dae_matrix(models_dict, test_loader, noise_levels):
+    dataiter = iter(test_loader)
+    images, _ = next(dataiter)
+    single_image = images[3:4].to(DEVICE)
+    single_image_flat = single_image.view(1, -1)
+    
+    num_cols = len(noise_levels)
+    fig, axes = plt.subplots(nrows=2, ncols=num_cols, figsize=(num_cols * 3, 6))
+    fig.suptitle("Visualisation qualitative du nettoyage d'image par le DAE", fontsize=12, y=1.02)
+    
+    for idx, sigma in enumerate(noise_levels):
+        noise = sigma * torch.randn_like(single_image_flat)
+        noisy_img = torch.clamp(single_image_flat + noise, 0.0, 1.0).view(28, 28)
+        
+        # Flux d'entree corrompu
+        axes[0, idx].imshow(noisy_img.cpu().numpy(), cmap='gray')
+        axes[0, idx].set_title(fr"Entree ($\sigma={sigma}$)")
+        axes[0, idx].axis('off')
+        
+        # Projection et decodage
+        model = models_dict[sigma]
+        model.eval()
+        with torch.no_grad():
+            reconstructed, _ = model(noisy_img.view(1, -1).to(DEVICE))
+            reconstructed = reconstructed.view(28, 28)
+            
+        # Flux de sortie propre
+        axes[1, idx].imshow(reconstructed.cpu().numpy(), cmap='gray')
+        axes[1, idx].set_title(fr"Sortie DAE")
+        axes[1, idx].axis('off')
+        
+    plt.tight_layout()
+    plt.savefig('dae_3_grille_visuelle.eps', format='eps', bbox_inches='tight')
+    plt.show()
+
+visualize_dae_matrix(dae_models, test_loader, noise_levels_to_test)
+\end{lstlisting}
+
+% =====================================================================
+	% SCRIPT DE LA DÉTECTION D'ANOMALIES ET BILAN
+	% =====================================================================
+	\chapter{Scripts de Détection d'Anomalies et Validation Graphique}
+	
+	Ce script gère le filtrage exclusif des données MNIST pour isoler une classe pathologique (le chiffre 9), l'apprentissage dédié du modèle de surveillance, le calcul statistique du seuil critique $\tau$, ainsi que les routines de génération des planches visuelles de diagnostic et du benchmark comparatif final de l'équipe.
+	
+	\begin{lstlisting}[caption=Pipeline complet de détection d'anomalies et de synthèse comparative]
+		import torch
+		import torch.nn as nn
+		import torch.optim as optim
+		from torch.utils.data import DataLoader, Subset
+		import matplotlib.pyplot as plt
+		import numpy as np
+		
+		# 1. Filtrage des donnees et exclusion de l'anomalie
+		CLASSE_ANOMALIE = 9       
+		BATCH_SIZE = 128
+		
+		train_filtered_idx = [i for i, (_, label) in enumerate(train_loader.dataset.dataset) if label != CLASSE_ANOMALIE]
+		train_anom_dataset = Subset(train_loader.dataset.dataset, train_filtered_idx)
+		
+		val_filtered_idx = [i for i, (_, label) in enumerate(val_loader.dataset.dataset) if label != CLASSE_ANOMALIE]
+		val_anom_dataset = Subset(val_loader.dataset.dataset, val_filtered_idx)
+		
+		m4_train_loader = DataLoader(train_anom_dataset, batch_size=BATCH_SIZE, shuffle=True)
+		m4_val_loader   = DataLoader(val_anom_dataset,   batch_size=BATCH_SIZE, shuffle=False)
+		m4_test_loader  = DataLoader(test_loader.dataset, batch_size=BATCH_SIZE, shuffle=False)
+		
+		# 2. Entrainement du modele dedie (Donnees saines)
+		model_detection = VanillaAutoencoder(latent_dim=32).to(DEVICE)
+		history_anom = training_loop(
+		model=model_detection,
+		train_loader=m4_train_loader,
+		val_loader=m4_val_loader,
+		num_epochs=20,
+		learning_rate=1e-3,
+		weight_decay=1e-5,
+		device=DEVICE,
+		verbose=True
+		)
+		
+		# 3. Inference et calcul de l'erreur MSE
+		model_detection.eval()
+		all_errors, all_labels = [], []
+		
+		with torch.no_grad():
+		for images, labels in m4_test_loader:
+		images = images.to(DEVICE)
+		outputs, _ = model_detection(images)
+		
+		# Aplatissement requis pour compatibilite avec l'architecture de base (Membre 1)
+		images_flattened = images.view(images.size(0), -1)
+		errors = ((outputs - images_flattened) ** 2).mean(dim=1)
+		
+		all_errors.extend(errors.cpu().numpy())
+		all_labels.extend(labels.numpy())
+		
+		all_errors = np.array(all_errors)
+		all_labels = np.array(all_labels)
+		
+		# Calcul du seuil d'alerte tau au 95e percentile sur les donnees saines
+		erreurs_normales = all_errors[all_labels != CLASSE_ANOMALIE]
+		SEUIL = np.percentile(erreurs_normales, 95)
+		print(f"Seuil de decision fixe a : {SEUIL:.5f}")
+		
+		# 4. Generation de l'histogramme de distribution
+		plt.figure(figsize=(10, 5))
+		plt.hist(all_errors[all_labels != CLASSE_ANOMALIE], bins=80, alpha=0.6, color='steelblue', label='Classes normales (0-8)')
+		plt.hist(all_errors[all_labels == CLASSE_ANOMALIE], bins=80, alpha=0.6, color='tomato', label=f'Anomalie ({CLASSE_ANOMALIE})')
+		plt.axvline(SEUIL, color='black', linewidth=2, linestyle='--', label=f'Seuil tau = {SEUIL:.4f}')
+		plt.xlabel('Erreur de reconstruction (MSE)')
+		plt.ylabel("Nombre d'images")
+		plt.title('Separation des anomalies par seuillage residuel')
+		plt.legend()
+		plt.grid(True, alpha=0.3)
+		plt.tight_layout()
+		plt.savefig('distribution_erreurs.png', dpi=150)
+		plt.show()
+		
+		# 5. Generation des diagnostics visuels 
+		def save_diagnostic_plots(title, indices, filename, n=6):
+		fig, axes = plt.subplots(2, n, figsize=(2.5 * n, 5))
+		fig.suptitle(title, fontsize=12, fontweight='bold')
+		for col, idx in enumerate(indices[:n]):
+		img, label = test_loader.dataset[idx]
+		with torch.no_grad():
+		recon, _ = model_detection(img.unsqueeze(0).to(DEVICE))
+		recon = recon.view(28, 28).cpu().numpy()
+		
+		axes[0, col].imshow(img.squeeze().numpy(), cmap='gray')
+		axes[0, col].axis('off')
+		axes[1, col].imshow(recon, cmap='gray')
+		axes[1, col].set_title(f'MSE: {all_errors[idx]:.4f}', fontsize=9)
+		axes[1, col].axis('off')
+		plt.tight_layout()
+		plt.savefig(filename, dpi=150)
+		plt.show()
+		
+		idx_normaux = np.where((all_labels != CLASSE_ANOMALIE) & (all_errors <= SEUIL))[0]
+		idx_anomalies = np.where((all_labels == CLASSE_ANOMALIE) & (all_errors > SEUIL))[0]
+		
+		save_diagnostic_plots('Classes normales - bien reconstruites', idx_normaux, 'classes_normales_bien_reconstruites2.png')
+		save_diagnostic_plots('Anomalies (9) - detectees', idx_anomalies, 'anomalies_9_detectees2.png')
+		
+		# 6. Graphe de synthese finale (Benchmark )
+		plt.figure(figsize=(10, 5))
+		plt.plot(range(1, 21), history['train_loss'], label='Vanilla AE (M1)', color='steelblue')
+		plt.plot(range(1, 21), sae_histories[1e-3]['train_loss'], label='Sparse AE (M2)', color='darkorange', linestyle='--')
+		plt.plot(range(1, 21), dae_histories[0.3]['train_loss'], label='Denoising AE (M2)', color='seagreen', linestyle='-.')
+		plt.plot(range(1, 21), history_anom['train_loss'], label='AE Anomalie (M4)', color='purple', linestyle='-')
+		plt.xlabel('Epoques')
+		plt.ylabel('Train Loss (MSE)')
+		plt.title("Bilan d'equipe : Convergence des differentes variantes")
+		plt.legend()
+		plt.grid(True, alpha=0.3)
+		plt.tight_layout()
+		plt.savefig('comparaison_modeles.png', dpi=150)
+		plt.show()
+	\end{lstlisting}
+
+\chapter{Code de l'Approche Générative (VAE - Membre 3)}
+\label{annexe:code_vae}
+
+Ce code correspond à l'implémentation de l'Auto-encodeur Variationnel détaillée dans le Chapitre \ref{chap:vae}. Il s'appuie sur le \texttt{DataLoader} et les bibliothèques importées par le modèle de base (Annexe A).
+
+\begin{lstlisting}[caption=Architecture du Variational Autoencoder et Reparamétrisation]
+import torch.nn.functional as F
+
+class VariationalAutoencoder(nn.Module):
+    def __init__(self, input_dim=784, hidden_dims=[256, 128], latent_dim=2):
+        super().__init__()
+        
+        # 1. L'Encodeur (tronc commun)
+        encoder_layers, prev_dim = [], input_dim
+        for h_dim in hidden_dims:
+            encoder_layers.extend([nn.Linear(prev_dim, h_dim), nn.ReLU()])
+            prev_dim = h_dim
+        self.encoder = nn.Sequential(*encoder_layers)
+        
+        # 2. Séparation en mu et log-variance
+        self.fc_mu = nn.Linear(prev_dim, latent_dim)
+        self.fc_logvar = nn.Linear(prev_dim, latent_dim)
+        
+        # 3. Le Décodeur
+        decoder_layers, prev_dim = [], latent_dim
+        for h_dim in reversed(hidden_dims):
+            decoder_layers.extend([nn.Linear(prev_dim, h_dim), nn.ReLU()])
+            prev_dim = h_dim
+        decoder_layers.extend([nn.Linear(prev_dim, input_dim), nn.Sigmoid()])
+        self.decoder = nn.Sequential(*decoder_layers)
+
+    def encode(self, x):
+        h = self.encoder(x)
+        return self.fc_mu(h), self.fc_logvar(h)
+
+    def reparameterize(self, mu, logvar):
+        # Astuce de reparametrisation : z = mu + sigma * epsilon
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)
+        return mu + eps * std
+
+    def decode(self, z):
+        return self.decoder(z)
+
+    def forward(self, x):
+        if x.dim() == 4: x = x.view(x.size(0), -1)
+        mu, logvar = self.encode(x)
+        z = self.reparameterize(mu, logvar)
+        return self.decode(z), mu, logvar
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Fonction de Perte Composite (KL + BCE) et Entraînement]
+def vae_loss_function(recon_x, x, mu, logvar):
+    # 1. Erreur de reconstruction (Binary Cross Entropy)
+    BCE = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
+    
+    # 2. Divergence de Kullback-Leibler
+    KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+    
+    return BCE + KLD
+
+def train_vae(model, dataloader, epochs=15, lr=1e-3):
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    model.train()
+    
+    for epoch in range(epochs):
+        train_loss = 0
+        for data, _ in dataloader:
+            data = data.to(DEVICE)
+            optimizer.zero_grad()
+            
+            recon_batch, mu, logvar = model(data)
+            loss = vae_loss_function(recon_batch, data, mu, logvar)
+            
+            loss.backward()
+            train_loss += loss.item()
+            optimizer.step()
+            
+        print(f'Epoch {epoch+1} | VAE Loss: {train_loss / len(dataloader.dataset):.4f}')
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Scripts de visualisation (Scatter Plot et Manifold)]
+import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_latent_space(model, dataloader):
+    """Genere le Scatter Plot de l'espace latent avec les classes."""
+    model.eval()
+    z_coords, labels = [], []
+    with torch.no_grad():
+        for data, target in dataloader:
+            mu, _ = model.encode(data.to(DEVICE).view(data.size(0), -1))
+            z_coords.append(mu.cpu().numpy())
+            labels.append(target.numpy())
+            
+    z_coords = np.concatenate(z_coords, axis=0)
+    labels = np.concatenate(labels, axis=0)
+    
+    plt.figure(figsize=(10, 8))
+    scatter = plt.scatter(z_coords[:, 0], z_coords[:, 1], c=labels, cmap='tab10', alpha=0.7, s=5)
+    plt.colorbar(scatter)
+    plt.title("Visualisation 2D de l'Espace Latent")
+    plt.show()
+
+def plot_generated_manifold(model, grid_size=15, range_val=2.0):
+    """Genere une grille d'images en balayant l'espace latent."""
+    model.eval()
+    figure = np.zeros((28 * grid_size, 28 * grid_size))
+    grid_x = np.linspace(-range_val, range_val, grid_size)
+    grid_y = np.linspace(range_val, -range_val, grid_size)
+    
+    with torch.no_grad():
+        for i, yi in enumerate(grid_y):
+            for j, xi in enumerate(grid_x):
+                z_sample = torch.tensor([[xi, yi]], dtype=torch.float32).to(DEVICE)
+                x_decoded = model.decode(z_sample).cpu().view(28, 28).numpy()
+                figure[i * 28: (i + 1) * 28, j * 28: (j + 1) * 28] = x_decoded
+                
+    plt.figure(figsize=(10, 10))
+    plt.imshow(figure, cmap='gray')
+    plt.axis('off')
+    plt.show()
+\end{lstlisting}
+
+
+
+
+%%------------------------------- Bibliography --------------------------------
+
+\renewcommand{\bibname}{Références bibliographiques}
+\addcontentsline{toc}{chapter}{Références bibliographiques} 
+
+\begin{thebibliography}{9}
+
+\bibitem{vincent2008}
+Vincent, P., Larochelle, H., Bengio, Y., \& Manzagol, P. A. (2008).
+\textit{Extracting and composing robust features with denoising autoencoders}. In Proceedings of the 25th international conference on Machine learning.
+
+\bibitem{kingma2013}
+Kingma, D. P., \& Welling, M. (2013).
+\textit{Auto-Encoding Variational Bayes}. arXiv preprint.
+
+\bibitem{chollet}
+Chollet, F.
+\textit{Building Autoencoders in Keras}. The Keras Blog.
+
+\bibitem{goodfellow}
+Goodfellow, I., Bengio, Y., \& Courville, A.
+\textit{Deep Learning Book}. Chapitre 14. MIT Press.
+
+\end{thebibliography}
+
+\end{document}
